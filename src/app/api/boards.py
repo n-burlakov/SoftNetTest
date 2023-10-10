@@ -49,9 +49,9 @@ async def update_board(payload: BoardSchema, id: int = Path(..., gt=0)):
     if not board:
         raise HTTPException(status_code=404, detail="board not found")
 
-    board_id = await crud.put(id, payload, board.created_date)
+    board_id = await crud.put(id, payload)
 
-    response_object = {'id': board_id, 'title': payload.title, "created_date": board.created_date}
+    response_object = {'id': board_id, 'title': payload.title}
     return response_object
 
 

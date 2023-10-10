@@ -17,8 +17,7 @@ async def post(payload: BoardSchema):
 
 async def get(id: int):
     query = boards.select().join(notes, boards.c.id == notes.c.board_id).where(id == boards.c.id)
-    res = await database.fetch_one(query=query)
-    return res
+    return await database.fetch_one(query=query)
 
 
 async def get_boards(skip: int, take: int):
@@ -31,11 +30,11 @@ async def get_all():
     return await database.fetch_all(query=query)
 
 
-async def put(id: int, payload: BoardSchema, created_date: dt.now()):
+async def put(id: int, payload: BoardSchema):
     query = (boards
              .update()
              .where(id == boards.c.id)
-             .values(title=payload.title, created_date=created_date, updated_date=dt.now())
+             .values(title=payload.title, updated_date=dt.now())
              .returning(boards.c.id)
              )
     return await database.execute(query=query)
