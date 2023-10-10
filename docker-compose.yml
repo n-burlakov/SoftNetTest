@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  fastapi_test:
+    build: ./src
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    hostname: fastapi_test
+    container_name: fastapi_test
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./src/:/SoftNetTest/src/app/
+    environment:
+      - DATABASE_URL=postgresql://postgres_user:postgres_pass@db/postgres_db
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15.1-alpine
+    restart: on-failure
+    environment:
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_pass
+      - POSTGRES_DB=postgres_db
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+  postgres_data:
+#    driver: local
+#
+#networks:
+#  notes:
+#    external: true
